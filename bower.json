@@ -5,7 +5,8 @@
     "hawtio"
   ],
   "main": [
-    "hawtio-core.js"
+    "dist/hawtio-core.css",
+    "dist/hawtio-core.js"
   ],
   "ignore": [
     ".bowerrc",
@@ -16,13 +17,31 @@
     "karma.conf.js",
     "index.html",
     "package.json",
-    "tests"
+    "tests",
+    "private",
+    "dist/hawtio-core-private.css",
+    "dist/hawtio-core-private.js"
   ],
   "dependencies": {
     "es5-dom-shim": "*",
-    "jquery": "~2.1.1",
-    "angular": "~1.3.5",
-    "angular-sanitize": "~1.3.5",
-    "js-logger": "~0.9.14"
+    "jquery": "~2.x",
+    "bootstrap": "~3.3.6",
+    "angular": "~1.5",
+    "angular-sanitize": "~1.5",
+    "angular-animate": "~1.5",
+    "angular-bootstrap": "~0.14.3",
+    "patternfly": "~2.7.0",
+    "angular-patternfly": "~2.7.0",
+    "js-logger": "~1.x",
+    "urijs": "~1.17.0"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/js/bootstrap.js",
+        "dist/css/bootstrap.css",
+        "less/bootstrap.less"
+      ]
+    }
   }
 }

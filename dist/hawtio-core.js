@@ -602,6 +602,10 @@ var HawtioCore;
         }]);
     hawtioPluginLoader.addModule("ng");
     hawtioPluginLoader.addModule("ngSanitize");
+    hawtioPluginLoader.addModule("ngAnimate");
+    hawtioPluginLoader.addModule("ui.bootstrap");
+    hawtioPluginLoader.addModule("patternfly");
+    hawtioPluginLoader.addModule("patternfly.charts");
     hawtioPluginLoader.addModule(HawtioCore.pluginName);
 })(HawtioCore || (HawtioCore = {}));
 

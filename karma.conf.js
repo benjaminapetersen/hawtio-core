@@ -17,9 +17,15 @@ module.exports = function(config) {
     files: [
       // bower:js
       'libs/jquery/dist/jquery.js',
+      'libs/bootstrap/dist/js/bootstrap.js',
       'libs/angular/angular.js',
       'libs/angular-sanitize/angular-sanitize.js',
+      'libs/angular-animate/angular-animate.js',
+      'libs/angular-bootstrap/ui-bootstrap-tpls.js',
+      'libs/patternfly/dist/js/patternfly.js',
+      'libs/angular-patternfly/dist/angular-patternfly.js',
       'libs/js-logger/src/logger.js',
+      'libs/urijs/src/URI.js',
       // endbower
       'hawtio-core.js',
       'tests/**/*.js'

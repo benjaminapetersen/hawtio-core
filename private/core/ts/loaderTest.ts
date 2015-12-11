@@ -25,7 +25,7 @@ module LoaderTest {
       setTimeout(function() {
         console.log("Async task executing");
         next();
-      }, 5000);
+      }, 50);
       console.log("Async task exiting");
     }
   });

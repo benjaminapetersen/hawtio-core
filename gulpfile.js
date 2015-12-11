@@ -20,14 +20,16 @@ var config = {
   ts: ['plugins/**/*.ts'],
   privateTs: ['private/**/*.ts'],
   less: ['plugins/**/*.less'],
+  privateLess: ['private/**/*.less'],
   templates: ['plugins/**/*.html'],
   privateTemplates: ['private/**/*.html'],
   templateModule: pkg.name + '-templates',
   privateTemplateModule: pkg.name + '-private-templates',
   dist: './dist/',
   js: pkg.name + '.js',
-  testJs: pkg.name + '-private.js',
+  privateJs: pkg.name + '-private.js',
   css: pkg.name + '.css',
+  privateCss: pkg.name + '-private.css',
   tsProject: plugins.typescript.createProject({
     target: 'ES5',
     module: 'commonjs',
@@ -44,11 +46,13 @@ var config = {
 
 gulp.task('wire-index.html', function() {
   return gulp.src('index.html')
+    .pipe(wiredep({}))
     .pipe(gulp.dest('.'));
 });
 
 gulp.task('wire-karma.conf.js', function() {
   return gulp.src('karma.conf.js')
+    .pipe(wiredep({}))
     .pipe(gulp.dest('.'));
 });
 
@@ -81,7 +85,7 @@ gulp.task('private-template', ['private-tsc'], function() {
 
 gulp.task('private-concat', ['private-template'], function() {
   return gulp.src(['test-compiled.js', 'test-templates.js'])
-    .pipe(plugins.concat(config.testJs))
+    .pipe(plugins.concat(config.privateJs))
     .pipe(gulp.dest(config.dist));
 });
 
@@ -128,6 +132,19 @@ gulp.task('less', function () {
     .pipe(gulp.dest('./dist'));
 });
 
+gulp.task('private-less', function () {
+  return gulp.src(config.privateLess)
+    .pipe(plugins.less({
+      paths: [ path.join(__dirname, 'less', 'includes') ]
+    }))
+    .on('error', plugins.notify.onError({
+      message: '<%= error.message %>',
+      title: 'private less file compilation error'
+    }))
+    .pipe(plugins.concat(config.privateCss))
+    .pipe(gulp.dest('./dist'));
+});
+
 
 gulp.task('template', ['tsc'], function() {
   return gulp.src(config.templates)
@@ -156,6 +173,9 @@ gulp.task('watch-less', function() {
   plugins.watch(config.less, function() {
     gulp.start('less');
   });
+  plugins.watch(config.privateLess, function() {
+    gulp.start('private-less');
+  });
 });
 
 gulp.task('watch', ['build', 'build-private', 'watch-less'], function() {
@@ -165,7 +185,7 @@ gulp.task('watch', ['build', 'build-private', 'watch-less'], function() {
   plugins.watch([config.privateTs, config.privateTemplates], function() {
     gulp.start([ 'private-template', 'private-concat', 'private-clean']);
   });
-  plugins.watch(['libs/**/*.js', 'libs/**/*.css', 'index.html', config.dist + '/' + '*'], function() {
+  plugins.watch(['libs/**/*.js', 'libs/**/*.css', 'index.html', urljoin(config.dist, '*')], function() {
     gulp.start('reload');
   });
 });
@@ -202,6 +222,6 @@ gulp.task('reload', function() {
 
 gulp.task('build', ['bower', 'tsc', 'less', 'template', 'concat', 'clean']);
 
-gulp.task('build-private', ['private-tsc', 'private-template', 'private-concat', 'private-clean']);
+gulp.task('build-private', ['private-tsc', 'private-less', 'private-template', 'private-concat', 'private-clean']);
 
 gulp.task('default', ['connect']);
