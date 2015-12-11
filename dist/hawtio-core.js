@@ -7,6 +7,7 @@
 var HawtioCore;
 (function (HawtioCore) {
     HawtioCore.injector = null;
+    HawtioCore.templatePath = 'plugins/core/html';
     HawtioCore.pluginName = 'hawtio-core';
     HawtioCore.log = Logger.get(HawtioCore.pluginName);
 })(HawtioCore || (HawtioCore = {}));
@@ -594,9 +595,11 @@ var HawtioCore;
 (function (HawtioCore) {
     // Hawtio core plugin responsible for bootstrapping a hawtio app
     HawtioCore._module = angular.module(HawtioCore.pluginName, []);
-    HawtioCore._module.config(["$locationProvider", function ($locationProvider) {
-            $locationProvider.html5Mode(true);
-        }]);
+    /*
+    _module.config(["$locationProvider", function ($locationProvider) {
+      $locationProvider.html5Mode(true);
+    }]);
+    */
     HawtioCore._module.run(['documentBase', function (documentBase) {
             HawtioCore.log.debug("loaded");
         }]);
@@ -666,6 +669,30 @@ var HawtioCore;
     // object
     HawtioCore._module.factory('localStorage', function () {
         return window.localStorage || dummyLocalStorage;
+    });
+})(HawtioCore || (HawtioCore = {}));
+
+/// <reference path="corePlugin.ts"/>
+var HawtioCore;
+(function (HawtioCore) {
+    var MainController = (function () {
+        function MainController($router) {
+            HawtioCore.log.debug("Hello world!");
+            $router.config([
+                {
+                    path: '/',
+                    component: 'home',
+                    as: 'Home'
+                }
+            ]);
+        }
+        return MainController;
+    })();
+    HawtioCore.MainController = MainController;
+    HawtioCore._module.component('main', {
+        restrict: 'E',
+        templateUrl: urljoin(HawtioCore.templatePath, 'main.html'),
+        controller: ['$router', MainController]
     });
 })(HawtioCore || (HawtioCore = {}));
 
@@ -742,3 +769,5 @@ var HawtioCore;
         };
     });
 })(HawtioCore || (HawtioCore = {}));
+
+angular.module("hawtio-core-templates", []).run(["$templateCache", function($templateCache) {$templateCache.put("plugins/core/html/main.html","<div>Hello!</div>\n");}]); hawtioPluginLoader.addModule("hawtio-core-templates");

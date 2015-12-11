@@ -26,6 +26,7 @@ module.exports = function(config) {
       'libs/angular-patternfly/dist/angular-patternfly.js',
       'libs/js-logger/src/logger.js',
       'libs/urijs/src/URI.js',
+      'libs/url-join/lib/url-join.js',
       // endbower
       'hawtio-core.js',
       'tests/**/*.js'

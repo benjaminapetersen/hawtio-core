@@ -35,7 +35,8 @@
     "patternfly": "~2.7.0",
     "angular-patternfly": "~2.7.0",
     "js-logger": "~1.x",
-    "urijs": "~1.17.0"
+    "urijs": "~1.17.0",
+    "url-join": "*"
   },
   "overrides": {
     "bootstrap": {
