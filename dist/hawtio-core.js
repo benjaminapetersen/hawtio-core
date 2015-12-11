@@ -600,12 +600,21 @@ var HawtioCore;
     HawtioCore._module.run(['documentBase', function (documentBase) {
             HawtioCore.log.debug("loaded");
         }]);
+    /* we also add our dependent modules here so that plugins don't need to specify them */
+    // angular
     hawtioPluginLoader.addModule("ng");
     hawtioPluginLoader.addModule("ngSanitize");
     hawtioPluginLoader.addModule("ngAnimate");
+    // new router
+    hawtioPluginLoader.addModule("ngComponentRouter");
+    // shim for old code
+    hawtioPluginLoader.addModule("ngRouteShim");
+    // angular-bootstrap
     hawtioPluginLoader.addModule("ui.bootstrap");
+    // angular-patternfly
     hawtioPluginLoader.addModule("patternfly");
     hawtioPluginLoader.addModule("patternfly.charts");
+    // and now the core plugin that's used to bootstrap the app in loader.ts
     hawtioPluginLoader.addModule(HawtioCore.pluginName);
 })(HawtioCore || (HawtioCore = {}));
 

@@ -6,6 +6,8 @@
   ],
   "main": [
     "dist/hawtio-core.css",
+    "dist/angular_1_router.js",
+    "dist/ng_route_shim.js",
     "dist/hawtio-core.js"
   ],
   "ignore": [

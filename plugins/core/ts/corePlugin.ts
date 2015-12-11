@@ -19,6 +19,11 @@ module HawtioCore {
   hawtioPluginLoader.addModule("ngSanitize");
   hawtioPluginLoader.addModule("ngAnimate");
 
+  // new router
+  hawtioPluginLoader.addModule("ngComponentRouter");
+  // shim for old code
+  hawtioPluginLoader.addModule("ngRouteShim");
+
   // angular-bootstrap
   hawtioPluginLoader.addModule("ui.bootstrap");
 
