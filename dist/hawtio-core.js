@@ -6,15 +6,6 @@
 /// <reference path="../../includes.ts"/>
 var HawtioCore;
 (function (HawtioCore) {
-    HawtioCore.injector = null;
-    HawtioCore.templatePath = 'plugins/core/html';
-    HawtioCore.pluginName = 'hawtio-core';
-    HawtioCore.log = Logger.get(HawtioCore.pluginName);
-})(HawtioCore || (HawtioCore = {}));
-
-/// <reference path="../../includes.ts"/>
-var HawtioCore;
-(function (HawtioCore) {
     // hawtio log initialization
     /* globals Logger window console document localStorage $ angular jQuery navigator Jolokia */
     Logger.setLevel(Logger.INFO);
@@ -247,6 +238,15 @@ var HawtioCore;
         onAdd();
         postLog.forEach(function (func) { func(); });
     });
+})(HawtioCore || (HawtioCore = {}));
+
+/// <reference path="../../includes.ts"/>
+var HawtioCore;
+(function (HawtioCore) {
+    HawtioCore.injector = null;
+    HawtioCore.templatePath = 'plugins/core/html';
+    HawtioCore.pluginName = 'hawtio-core';
+    HawtioCore.log = Logger.get(HawtioCore.pluginName);
 })(HawtioCore || (HawtioCore = {}));
 
 /// <reference path="logger.ts"/>
@@ -596,12 +596,49 @@ var HawtioCore;
     // Hawtio core plugin responsible for bootstrapping a hawtio app
     HawtioCore._module = angular.module(HawtioCore.pluginName, []);
     /*
-    _module.config(["$locationProvider", function ($locationProvider) {
-      $locationProvider.html5Mode(true);
-    }]);
+    
+     // Uncomment to dump out all the plugins and services at bootup
+  
+    _module.run(() => {
+      if (!log.enabledFor(Logger.DEBUG)) {
+        return;
+      }
+      setTimeout(() => {
+        var plugins = _.filter(hawtioPluginLoader.getModules(), (module) => angular.isString(module));
+        var getServices = (module:string, answer:any) => {
+          if (!answer) {
+            answer = <any> {};
+          }
+          _.forEach(angular.module(module).requires, (m) => getServices(m, answer));
+          _.forEach((<any>angular.module(module))._invokeQueue, (a) => {
+            try {
+              answer[a[2][0]] = injector.get(a[2][0]);
+            } catch (err) {
+              //nothing to do
+            }
+          });
+          return answer;
+        }
+        var services = {};
+        _.forEach(plugins, (plugin:string) => plugin ? getServices(plugin, services) : log.debug("null plugin name"));
+        log.debug("Plugins: ", plugins.join(', '));
+        log.debug("Services: ");
+        _.forIn(services, (service, key) => {
+          log.debug("  " + key + ": ", service);
+        });
+        log.debug("Injector: ", injector);
+      }, 50);
+    });
     */
-    HawtioCore._module.run(['documentBase', function (documentBase) {
-            HawtioCore.log.debug("loaded");
+    HawtioCore._module.run(['documentBase', '$router', function (documentBase, $router) {
+            $router.config([
+                {
+                    path: '/',
+                    component: 'home',
+                    as: 'Home'
+                }
+            ]);
+            HawtioCore.log.debug("Loaded");
         }]);
     /* we also add our dependent modules here so that plugins don't need to specify them */
     // angular
@@ -619,6 +656,50 @@ var HawtioCore;
     hawtioPluginLoader.addModule("patternfly.charts");
     // and now the core plugin that's used to bootstrap the app in loader.ts
     hawtioPluginLoader.addModule(HawtioCore.pluginName);
+})(HawtioCore || (HawtioCore = {}));
+
+/// <reference path="corePlugin.ts"/>
+var HawtioCore;
+(function (HawtioCore) {
+    var BreadcrumbsController = (function () {
+        function BreadcrumbsController($router, $location) {
+            var _this = this;
+            this.$router = $router;
+            this.$location = $location;
+            this.paths = [];
+            $router.subscribe(function (args) {
+                HawtioCore.log.debug("subscribe, args: ", args);
+                HawtioCore.log.debug("$location.path: ", $location.path());
+                _this.paths.length = 0;
+                var fullPath = '';
+                _.forEach($location.path().split('/'), function (path) {
+                    if (path === '') {
+                        fullPath = urljoin(fullPath, '/');
+                        _this.paths.push({
+                            name: 'Home',
+                            href: '/'
+                        });
+                    }
+                    else {
+                        fullPath = urljoin(fullPath, path);
+                        _this.paths.push({
+                            name: path,
+                            href: urljoin(fullPath, path)
+                        });
+                    }
+                });
+                HawtioCore.log.debug("Paths: ", _this.paths);
+            });
+        }
+        return BreadcrumbsController;
+    })();
+    HawtioCore.BreadcrumbsController = BreadcrumbsController;
+    HawtioCore._module.component('hawtioBreadcrumbs', {
+        restrict: 'EA',
+        templateUrl: urljoin(HawtioCore.templatePath, 'breadcrumbs.html'),
+        controller: ['$router', '$location', BreadcrumbsController],
+        controllerAs: 'breadcrumbs'
+    });
 })(HawtioCore || (HawtioCore = {}));
 
 /// <reference path="corePlugin.ts"/>
@@ -677,22 +758,48 @@ var HawtioCore;
 (function (HawtioCore) {
     var MainController = (function () {
         function MainController($router) {
-            HawtioCore.log.debug("Hello world!");
-            $router.config([
-                {
-                    path: '/',
-                    component: 'home',
-                    as: 'Home'
-                }
-            ]);
+            HawtioCore.log.debug("Main controller");
         }
         return MainController;
     })();
     HawtioCore.MainController = MainController;
+    var HomeController = (function () {
+        function HomeController($router) {
+            this.$routeConfig = [];
+            HawtioCore.log.debug("Home controller");
+        }
+        return HomeController;
+    })();
+    HawtioCore.HomeController = HomeController;
+    HawtioCore._module.component('home', {
+        restrict: 'EA',
+        templateUrl: urljoin(HawtioCore.templatePath, 'home.html'),
+        controller: ['$router', HomeController]
+    });
     HawtioCore._module.component('main', {
-        restrict: 'E',
+        restrict: 'EA',
         templateUrl: urljoin(HawtioCore.templatePath, 'main.html'),
         controller: ['$router', MainController]
+    });
+})(HawtioCore || (HawtioCore = {}));
+
+/// <reference path="corePlugin.ts"/>
+var HawtioCore;
+(function (HawtioCore) {
+    var NavigationController = (function () {
+        function NavigationController($router, $route, $location) {
+            this.$router = $router;
+            this.$route = $route;
+            this.$location = $location;
+        }
+        return NavigationController;
+    })();
+    HawtioCore.NavigationController = NavigationController;
+    HawtioCore._module.component('hawtioNavigation', {
+        restrict: 'EA',
+        templateUrl: urljoin(HawtioCore.templatePath, 'navigation.html'),
+        controller: ['$router', '$route', '$location', NavigationController],
+        controllerAs: 'nav'
     });
 })(HawtioCore || (HawtioCore = {}));
 
@@ -770,4 +877,7 @@ var HawtioCore;
     });
 })(HawtioCore || (HawtioCore = {}));
 
-angular.module("hawtio-core-templates", []).run(["$templateCache", function($templateCache) {$templateCache.put("plugins/core/html/main.html","<div>Hello!</div>\n");}]); hawtioPluginLoader.addModule("hawtio-core-templates");
+angular.module("hawtio-core-templates", []).run(["$templateCache", function($templateCache) {$templateCache.put("plugins/core/html/breadcrumbs.html","<p>Breadcrumbs</p>\n");
+$templateCache.put("plugins/core/html/home.html","<div>home</div>\n");
+$templateCache.put("plugins/core/html/main.html","<p>Main Controller</p>\n<div hawtio-navigation></div>\n<div hawtio-breadcrumbs></div>\n<div ng-outlet></div>\n");
+$templateCache.put("plugins/core/html/navigation.html","<p>Nav</p>\n\n");}]); hawtioPluginLoader.addModule("hawtio-core-templates");

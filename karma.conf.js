@@ -27,6 +27,7 @@ module.exports = function(config) {
       'libs/js-logger/src/logger.js',
       'libs/urijs/src/URI.js',
       'libs/url-join/lib/url-join.js',
+      'libs/lodash/lodash.js',
       // endbower
       'hawtio-core.js',
       'tests/**/*.js'

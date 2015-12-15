@@ -36,7 +36,8 @@
     "angular-patternfly": "~2.7.0",
     "js-logger": "~1.x",
     "urijs": "~1.17.0",
-    "url-join": "*"
+    "url-join": "*",
+    "lodash": "~3.10.1"
   },
   "overrides": {
     "bootstrap": {

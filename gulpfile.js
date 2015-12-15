@@ -15,6 +15,16 @@ var gulp = require('gulp'),
 var plugins = gulpLoadPlugins({});
 var pkg = require('./package.json');
 
+var tsConfig = {
+  target: 'ES5',
+  module: 'commonjs',
+  emitDecoratorMetadata: true,
+  experimentalDecorators: true,
+  declarationFiles: true,
+  noExternalResolve: false,
+  noImplicitAny: false
+};
+
 var config = {
   main: '.',
   ts: ['plugins/**/*.ts'],
@@ -30,18 +40,8 @@ var config = {
   privateJs: pkg.name + '-private.js',
   css: pkg.name + '.css',
   privateCss: pkg.name + '-private.css',
-  tsProject: plugins.typescript.createProject({
-    target: 'ES5',
-    module: 'commonjs',
-    declarationFiles: true,
-    noExternalResolve: false
-  }),
-  privateTsProject: plugins.typescript.createProject({
-    target: 'ES5',
-    module: 'commonjs',
-    declarationFiles: false,
-    noExternalResolve: false
-  })
+  tsProject: plugins.typescript.createProject(tsConfig),
+  privateTsProject: plugins.typescript.createProject(tsConfig)
 };
 
 gulp.task('wire-index.html', function() {

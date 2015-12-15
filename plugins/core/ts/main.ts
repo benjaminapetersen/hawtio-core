@@ -4,19 +4,26 @@ module HawtioCore {
 
   export class MainController {
     constructor($router) {
-      log.debug("Hello world!");
-      $router.config([
-        {
-          path: '/',
-          component: 'home',
-          as: 'Home'
-        }
-      ]);
+      log.debug("Main controller");
     }
   }
 
+  export class HomeController {
+    public $routeConfig = [];
+    constructor($router) {
+      log.debug("Home controller");
+
+    }
+  }
+
+  _module.component('home', {
+    restrict: 'EA',
+    templateUrl: urljoin(templatePath, 'home.html'),
+    controller: ['$router', HomeController]
+  });
+  
   _module.component('main', {
-    restrict: 'E',
+    restrict: 'EA',
     templateUrl: urljoin(templatePath, 'main.html'),
     controller: ['$router', MainController]
   });

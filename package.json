@@ -7,7 +7,7 @@
     "tsd": "tsd install",
     "build": "gulp build",
     "setup": "npm run-script bower && npm run-script tsd && npm run-script build",
-    "postinstall": "cp node_modules/@angular/router/angular1/*.js dist/"
+    "update-router": "cp node_modules/@angular/router/angular1/*.js dist/"
   },
   "devDependencies": {
     "@angular/router": "0.0.1",
