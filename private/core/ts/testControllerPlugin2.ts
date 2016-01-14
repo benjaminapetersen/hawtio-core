@@ -12,7 +12,7 @@ module HawtioCorePrivate {
       {
         path: '/private-controller-plugin-2',
         component: 'private-controller-2',
-        as: 'PrivateController2'
+        name: 'PrivateController2'
       }
     ]);
   }]);
@@ -48,12 +48,12 @@ module HawtioCorePrivate {
       {
         path: '/one',
         component: 'one',
-        as: 'One'
+        name: 'One'
       },
       {
         path: '/two',
         component: 'two',
-        as: 'Two'
+        name: 'Two'
       }
     ]
   });

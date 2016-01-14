@@ -46,7 +46,7 @@ module HawtioCore {
       {
         path: '/',
         component: 'home',
-        as: 'Home'
+        name: 'Home'
       }
     ]);
     log.debug("Loaded");

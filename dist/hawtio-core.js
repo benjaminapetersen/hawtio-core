@@ -635,7 +635,7 @@ var HawtioCore;
                 {
                     path: '/',
                     component: 'home',
-                    as: 'Home'
+                    name: 'Home'
                 }
             ]);
             HawtioCore.log.debug("Loaded");
@@ -663,32 +663,11 @@ var HawtioCore;
 (function (HawtioCore) {
     var BreadcrumbsController = (function () {
         function BreadcrumbsController($router, $location) {
-            var _this = this;
             this.$router = $router;
             this.$location = $location;
-            this.paths = [];
             $router.subscribe(function (args) {
                 HawtioCore.log.debug("subscribe, args: ", args);
                 HawtioCore.log.debug("$location.path: ", $location.path());
-                _this.paths.length = 0;
-                var fullPath = '';
-                _.forEach($location.path().split('/'), function (path) {
-                    if (path === '') {
-                        fullPath = urljoin(fullPath, '/');
-                        _this.paths.push({
-                            name: 'Home',
-                            href: '/'
-                        });
-                    }
-                    else {
-                        fullPath = urljoin(fullPath, path);
-                        _this.paths.push({
-                            name: path,
-                            href: urljoin(fullPath, path)
-                        });
-                    }
-                });
-                HawtioCore.log.debug("Paths: ", _this.paths);
             });
         }
         return BreadcrumbsController;

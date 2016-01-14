@@ -92,7 +92,7 @@ var HawtioCorePrivate;
                 {
                     path: '/private-controller-plugin-1',
                     component: 'private-controller-1',
-                    as: 'PrivateController1'
+                    name: 'PrivateController1'
                 }
             ]);
         }]);
@@ -122,7 +122,7 @@ var HawtioCorePrivate;
                 {
                     path: '/private-controller-plugin-2',
                     component: 'private-controller-2',
-                    as: 'PrivateController2'
+                    name: 'PrivateController2'
                 }
             ]);
         }]);
@@ -159,12 +159,12 @@ var HawtioCorePrivate;
             {
                 path: '/one',
                 component: 'one',
-                as: 'One'
+                name: 'One'
             },
             {
                 path: '/two',
                 component: 'two',
-                as: 'Two'
+                name: 'Two'
             }
         ]
     });
